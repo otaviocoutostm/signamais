@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { API_URL, WS_URL } from '../../lib/api-config';;
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -39,7 +40,7 @@ export default function MediaPage() {
   const loadMedia = async (q?: string) => {
     try {
       const token = getToken();
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/media${q ? `?search=${q}` : ''}`, {
+      const res = await axios.get(`${API_URL}/api/media${q ? `?search=${q}` : ''}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMedia(res.data);
@@ -57,7 +58,7 @@ export default function MediaPage() {
       const formData = new FormData();
       formData.append('file', file);
       try {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/media/upload`, formData, {
+        await axios.post(`${API_URL}/api/media/upload`, formData, {
           headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
         });
       } catch (err) {
@@ -76,7 +77,7 @@ export default function MediaPage() {
   const removeMedia = async (id: string) => {
     const token = getToken();
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/media/${id}`, {
+      await axios.delete(`${API_URL}/api/media/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMedia((prev) => prev.filter((m) => m.id !== id));
@@ -99,7 +100,7 @@ export default function MediaPage() {
 
   const isImage = (mime: string) => mime.startsWith('image/');
   const getThumbUrl = (item: MediaItem) =>
-    `${process.env.NEXT_PUBLIC_API_URL}/api/media/${item.id}/download`;
+    `${API_URL}/api/media/${item.id}/download`;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -203,10 +204,10 @@ export default function MediaPage() {
           <div className="bg-white rounded-2xl overflow-hidden max-w-2xl w-full"
                onClick={(e) => e.stopPropagation()}>
             {isImage(preview.mimeType) ? (
-              <img src={`${process.env.NEXT_PUBLIC_API_URL}/api/media/${preview.id}/download`}
+              <img src={`${API_URL}/api/media/${preview.id}/download`}
                    alt={preview.name} className="w-full max-h-[70vh] object-contain bg-gray-900" />
             ) : (
-              <video src={`${process.env.NEXT_PUBLIC_API_URL}/api/media/${preview.id}/download`}
+              <video src={`${API_URL}/api/media/${preview.id}/download`}
                      controls className="w-full max-h-[70vh]" />
             )}
             <div className="p-4">

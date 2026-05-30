@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { API_URL, WS_URL } from '../../lib/api-config';;
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -28,9 +29,9 @@ export default function DashboardPage() {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
       const [media, layouts, playersRes] = await Promise.all([
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/media`, { headers }),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/layouts`, { headers }),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/players`, { headers }),
+        axios.get(`${API_URL}/api/media`, { headers }),
+        axios.get(`${API_URL}/api/layouts`, { headers }),
+        axios.get(`${API_URL}/api/players`, { headers }),
       ]);
       const p = playersRes.data;
       setPlayers(p);

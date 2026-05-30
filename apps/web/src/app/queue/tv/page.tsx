@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { API_URL, WS_URL } from '../../../lib/api-config';;
 
 import { useEffect, useState, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
@@ -45,7 +46,7 @@ export default function QueueTvPage() {
 
   const loadDisplay = async () => {
     try {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/display`);
+      const { data } = await axios.get(`${API_URL}/api/queue/display`);
       setDisplay(data);
     } catch {}
   };

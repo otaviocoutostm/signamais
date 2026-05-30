@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { API_URL, WS_URL } from '../../../lib/api-config';;
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -41,10 +42,10 @@ export default function QueueAdminPage() {
     try {
       const headers = { Authorization: `Bearer ${getToken()}` };
       const [serRes, deskRes, statRes, statusRes] = await Promise.all([
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/services`, { headers }),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/desks`, { headers }),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/stats`, { headers }),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/status`, { headers }),
+        axios.get(`${API_URL}/api/queue/services`, { headers }),
+        axios.get(`${API_URL}/api/queue/desks`, { headers }),
+        axios.get(`${API_URL}/api/queue/stats`, { headers }),
+        axios.get(`${API_URL}/api/queue/status`, { headers }),
       ]);
       setServices(serRes.data);
       setDesks(deskRes.data);
@@ -58,7 +59,7 @@ export default function QueueAdminPage() {
   const createService = async () => {
     if (!serviceForm.name) return;
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/services`, serviceForm, {
+      await axios.post(`${API_URL}/api/queue/services`, serviceForm, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setShowServiceForm(false);
@@ -69,7 +70,7 @@ export default function QueueAdminPage() {
 
   const removeService = async (id: string) => {
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/services/${id}`, {
+      await axios.delete(`${API_URL}/api/queue/services/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       loadAll();
@@ -80,7 +81,7 @@ export default function QueueAdminPage() {
   const createDesk = async () => {
     if (!deskForm.name) return;
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/desks`, deskForm, {
+      await axios.post(`${API_URL}/api/queue/desks`, deskForm, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setShowDeskForm(false);
@@ -91,7 +92,7 @@ export default function QueueAdminPage() {
 
   const removeDesk = async (id: string) => {
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/desks/${id}`, {
+      await axios.delete(`${API_URL}/api/queue/desks/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       loadAll();
@@ -100,7 +101,7 @@ export default function QueueAdminPage() {
 
   const toggleDeskPause = async (id: string) => {
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/desks/${id}/pause`, {}, {
+      await axios.post(`${API_URL}/api/queue/desks/${id}/pause`, {}, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       loadAll();

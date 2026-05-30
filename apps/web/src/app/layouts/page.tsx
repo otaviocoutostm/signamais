@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { API_URL, WS_URL } from '../../lib/api-config';;
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -32,7 +33,7 @@ export default function LayoutsPage() {
   const loadLayouts = async () => {
     try {
       const token = getToken();
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/layouts`, {
+      const res = await axios.get(`${API_URL}/api/layouts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLayouts(res.data);
@@ -46,7 +47,7 @@ export default function LayoutsPage() {
   const createLayout = async () => {
     try {
       const token = getToken();
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/layouts`,
+      const res = await axios.post(`${API_URL}/api/layouts`,
         { name: `Layout ${layouts.length + 1}`, width: 1920, height: 1080 },
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -59,7 +60,7 @@ export default function LayoutsPage() {
   const removeLayout = async (id: string) => {
     try {
       const token = getToken();
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/layouts/${id}`, {
+      await axios.delete(`${API_URL}/api/layouts/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setLayouts((prev) => prev.filter((l) => l.id !== id));

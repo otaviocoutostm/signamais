@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { API_URL, WS_URL } from '../../lib/api-config';;
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -48,7 +49,7 @@ export default function PlayersPage() {
 
   const loadPlayers = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/players`, {
+      const res = await axios.get(`${API_URL}/api/players`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setPlayers(res.data);
@@ -58,7 +59,7 @@ export default function PlayersPage() {
 
   const createPlayer = async () => {
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/players`, {}, {
+      const res = await axios.post(`${API_URL}/api/players`, {}, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setPlayers(prev => [res.data, ...prev]);
@@ -68,7 +69,7 @@ export default function PlayersPage() {
 
   const removePlayer = async (id: string) => {
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/players/${id}`, {
+      await axios.delete(`${API_URL}/api/players/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setPlayers(prev => prev.filter(p => p.id !== id));

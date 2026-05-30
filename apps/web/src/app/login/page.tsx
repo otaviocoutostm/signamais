@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { API_URL, WS_URL } from '../../lib/api-config';;
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -17,7 +18,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+      const res = await axios.post(`${API_URL}/api/auth/login`, {
         email,
         password,
       });

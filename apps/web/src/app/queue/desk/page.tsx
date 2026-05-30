@@ -1,4 +1,5 @@
-'use client';
+'use client'
+import { API_URL, WS_URL } from '../../../lib/api-config';;
 
 import { Suspense, useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -48,7 +49,7 @@ function QueueDeskInner() {
 
   const loadDesks = async () => {
     try {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/desks`);
+      const { data } = await axios.get(`${API_URL}/api/queue/desks`);
       setDesks(data.filter((d: Desk) => d.isActive));
     } catch {}
     setLoading(false);
@@ -79,9 +80,9 @@ function QueueDeskInner() {
 
   const loadCurrentTicket = async (did: string) => {
     try {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/status`);
+      const { data } = await axios.get(`${API_URL}/api/queue/status`);
       // Find any ticket currently called/in-progress for this desk
-      const { data: history } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/history?limit=5`);
+      const { data: history } = await axios.get(`${API_URL}/api/queue/history?limit=5`);
       // Check if there's a current ticket by looking at recent calls
       setCurrentTicket(null);
     } catch {}
@@ -89,7 +90,7 @@ function QueueDeskInner() {
 
   const loadQueueStatus = async () => {
     try {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/status`);
+      const { data } = await axios.get(`${API_URL}/api/queue/status`);
       setQueueStatus(data);
     } catch {}
   };
@@ -97,7 +98,7 @@ function QueueDeskInner() {
   const callNext = async () => {
     setActivating(true);
     try {
-      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/call/next`, { deskId });
+      const { data } = await axios.post(`${API_URL}/api/queue/call/next`, { deskId });
       setCurrentTicket(data);
     } catch (err: any) {
       alert(err.response?.data?.message || 'Erro ao chamar');
@@ -108,7 +109,7 @@ function QueueDeskInner() {
   const finish = async () => {
     if (!currentTicket) return;
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/${currentTicket.id}/finish`);
+      await axios.post(`${API_URL}/api/queue/${currentTicket.id}/finish`);
       setCurrentTicket(null);
     } catch {}
   };
@@ -116,7 +117,7 @@ function QueueDeskInner() {
   const noShow = async () => {
     if (!currentTicket) return;
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/${currentTicket.id}/no-show`);
+      await axios.post(`${API_URL}/api/queue/${currentTicket.id}/no-show`);
       setCurrentTicket(null);
     } catch {}
   };
@@ -124,13 +125,13 @@ function QueueDeskInner() {
   const recall = async () => {
     if (!currentTicket) return;
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/call/recall`, { ticketId: currentTicket.id });
+      await axios.post(`${API_URL}/api/queue/call/recall`, { ticketId: currentTicket.id });
     } catch {}
   };
 
   const togglePause = async () => {
     try {
-      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/desks/${deskId}/pause`);
+      const { data } = await axios.post(`${API_URL}/api/queue/desks/${deskId}/pause`);
       setDesk(data);
     } catch {}
   };
