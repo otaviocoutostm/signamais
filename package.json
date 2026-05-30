@@ -1,0 +1,12 @@
+{
+  "name": "signamais",
+  "private": true,
+  "scripts": {
+    "dev:api": "cd apps/api && npm run start:dev",
+    "dev:web": "cd apps/web && npm run dev",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "build": "cd apps/api && npm run build && cd ../web && npm run build",
+    "start:api": "cd apps/api && node dist/main.js",
+    "start:web": "cd apps/web && npm start"
+  }
+}

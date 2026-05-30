@@ -1,0 +1,29 @@
+# Render Blueprint — Deploy completo do SignaMais
+services:
+  - type: web
+    name: signamais-api
+    env: docker
+    dockerfilePath: ./Dockerfile.api
+    repo: https://github.com/otaviocoutostm/signamais
+    branch: main
+    plan: free
+    healthCheckPath: /api/queue/status
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: JWT_SECRET
+        generateValue: true
+
+  - type: web
+    name: signamais-web
+    env: docker
+    dockerfilePath: ./Dockerfile.web
+    repo: https://github.com/otaviocoutostm/signamais
+    branch: main
+    plan: free
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: signamais-api
+          type: web
+          property: host
