@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { Suspense, useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
@@ -15,7 +15,7 @@ interface Ticket {
   service?: any; desk?: any;
 }
 
-export default function QueueDeskPage() {
+function QueueDeskInner() {
   const searchParams = useSearchParams();
   const deskIdParam = searchParams.get('deskId');
   const [deskId, setDeskId] = useState(deskIdParam || '');
@@ -262,5 +262,14 @@ export default function QueueDeskPage() {
         });
       `}} />
     </div>
+  );
+}
+
+
+export default function QueueDeskPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center"><p className="text-gray-500">Carregando...</p></div>}>
+      <QueueDeskInner />
+    </Suspense>
   );
 }
