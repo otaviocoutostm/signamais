@@ -1,22 +1,17 @@
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 WORKDIR /app
 
-# Copy package files
 COPY apps/web/package*.json ./
 RUN npm ci
-
-# Copy source
 COPY apps/web/tsconfig*.json ./
 COPY apps/web/next.config.js ./
 COPY apps/web/next-env.d.ts ./
 COPY apps/web/public ./public
 COPY apps/web/src ./src
 
-# Build
 RUN npm run build
 
-# Production image
-FROM node:20-alpine
+FROM node:20-slim
 WORKDIR /app
 
 COPY --from=builder /app/.next ./.next

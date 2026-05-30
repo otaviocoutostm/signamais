@@ -2,31 +2,27 @@
 services:
   - type: web
     name: signamais-api
-    runtime: node
+    env: docker
+    dockerfilePath: ./Dockerfile.api
     repo: https://github.com/otaviocoutostm/signamais
     branch: main
     plan: free
-    buildCommand: cd apps/api && npm install && npx prisma generate && npm run build
-    startCommand: cd apps/api && node dist/main.js
     healthCheckPath: /api/queue/status
     envVars:
       - key: PORT
-        value: 3001
+        value: "3001"
       - key: JWT_SECRET
         generateValue: true
       - key: PRISMA_CLIENT_ENGINE_TYPE
         value: binary
-      - key: DATABASE_URL
-        value: file:./prisma/dev.db
 
   - type: web
     name: signamais-web
-    runtime: node
+    env: docker
+    dockerfilePath: ./Dockerfile.web
     repo: https://github.com/otaviocoutostm/signamais
     branch: main
     plan: free
-    buildCommand: cd apps/web && npm install && npm run build
-    startCommand: cd apps/web && npm start
     envVars:
       - key: NEXT_PUBLIC_API_URL
         fromService:
