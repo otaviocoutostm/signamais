@@ -23,6 +23,8 @@ services:
     repo: https://github.com/otaviocoutostm/signamais
     branch: main
     plan: free
+    dockerBuildArgs:
+      NEXT_PUBLIC_API_URL: https://signamais-api.onrender.com
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://signamais-api.onrender.com
