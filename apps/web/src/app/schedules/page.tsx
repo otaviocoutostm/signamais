@@ -64,11 +64,11 @@ export default function SchedulesPage() {
       const token = getToken();
       const headers = { Authorization: `Bearer ${token}` };
       const [schRes, playRes, layRes, campRes, grpRes] = await Promise.all([
-        axios.get(`/api/schedules`, { headers }),
-        axios.get(`/api/players`, { headers }),
-        axios.get(`/api/layouts`, { headers }),
-        axios.get(`/api/campaigns`, { headers }),
-        axios.get(`/api/display-groups`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/schedules`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/players`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/layouts`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/campaigns`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/display-groups`, { headers }),
       ]);
       setSchedules(schRes.data);
       setPlayers(playRes.data);
@@ -160,7 +160,7 @@ export default function SchedulesPage() {
 
     try {
       const token = getToken();
-      await axios.post(`/api/schedules`, data, {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/schedules`, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setShowForm(false);
@@ -174,7 +174,7 @@ export default function SchedulesPage() {
   const removeSchedule = async (id: string) => {
     try {
       const token = getToken();
-      await axios.delete(`/api/schedules/${id}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/schedules/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSchedules((prev) => prev.filter((s) => s.id !== id));
@@ -205,7 +205,7 @@ export default function SchedulesPage() {
     try {
       const token = getToken();
       await axios.post(
-        `/api/schedules/${selectedSchedule.id}/overlays`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/schedules/${selectedSchedule.id}/overlays`,
         {
           layoutId: overlayForm.layoutId,
           startDate: new Date().toISOString(),
@@ -224,7 +224,7 @@ export default function SchedulesPage() {
   const removeOverlay = async (overlayId: string) => {
     try {
       const token = getToken();
-      await axios.delete(`/api/schedules/overlays/${overlayId}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/schedules/overlays/${overlayId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       loadAll();

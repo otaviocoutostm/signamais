@@ -45,7 +45,7 @@ export default function QueueTvPage() {
 
   const loadDisplay = async () => {
     try {
-      const { data } = await axios.get(`/api/queue/display`);
+      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/display`);
       setDisplay(data);
     } catch {}
   };

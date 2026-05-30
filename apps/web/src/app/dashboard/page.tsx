@@ -28,9 +28,9 @@ export default function DashboardPage() {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
       const [media, layouts, playersRes] = await Promise.all([
-        axios.get(`/api/media`, { headers }),
-        axios.get(`/api/layouts`, { headers }),
-        axios.get(`/api/players`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/media`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/layouts`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/players`, { headers }),
       ]);
       const p = playersRes.data;
       setPlayers(p);
