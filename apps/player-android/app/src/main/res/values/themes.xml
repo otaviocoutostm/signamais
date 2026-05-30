@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SignaMaisPlayer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#0f0f0f</item>
+        <item name="android:navigationBarColor">#0f0f0f</item>
+        <item name="colorPrimary">#FF0044</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#002B5C</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorSurface">#1a1a1a</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+
+    <style name="Theme.SignaMaisPlayer.Fullscreen" parent="Theme.SignaMaisPlayer">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+</resources>

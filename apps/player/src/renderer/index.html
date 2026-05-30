@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignaMais Player</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: white;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* Pairing Screen */
+    #pairing-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #002B5C 0%, #00122b 100%);
+    }
+    #pairing-screen.paired { display: none; }
+
+    .pairing-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+    }
+    .pairing-box h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .pairing-box h1 span { color: #FF0044; }
+    .pairing-box .subtitle {
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+    .pairing-box input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.8rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .pairing-box input:focus {
+      border-color: #FF0044;
+    }
+    .pairing-box input::placeholder { color: rgba(255,255,255,0.3); }
+    .pairing-box button {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 10px;
+      border: none;
+      background: #FF0044;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .pairing-box button:hover { background: #cc0036; }
+    .pairing-box button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .pairing-box .error {
+      color: #FF6B6B;
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+    }
+    .pairing-box .logo {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+    .status-dot.connected { background: #00E85C; }
+    .status-dot.disconnected { background: #FF0044; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    /* Player Screen (fullscreen layout display) */
+    #player-screen {
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      position: relative;
+    }
+    #player-screen.active { display: flex; }
+
+    .layout-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .region {
+      position: absolute;
+      overflow: hidden;
+    }
+    .region img, .region video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .region .text-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      color: white;
+      font-size: 2rem;
+    }
+
+    .no-content {
+      color: rgba(255,255,255,0.2);
+      font-size: 1.2rem;
+    }
+
+    /* Loading */
+    .loading-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .loading-overlay.active { display: flex; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #FF0044;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <!-- Pairing Screen -->
+  <div id="pairing-screen">
+    <div class="pairing-box">
+      <div class="logo">📺</div>
+      <h1>Signa<span>Mais</span></h1>
+      <p class="subtitle">Conecte este player ao seu servidor</p>
+      <input type="text" id="server-url" placeholder="URL do Servidor (http://...)" value="http://localhost:3000" />
+      <input type="text" id="pairing-code" placeholder="Código de Pareamento" />
+      <button id="pair-btn" onclick="pair()">Conectar</button>
+      <p id="pair-error" class="error"></p>
+      <p style="margin-top: 1.5rem; font-size: 0.75rem; color: rgba(255,255,255,0.25);">
+        Versão 0.1.0 · <span id="status-text">Desconectado</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Player Screen -->
+  <div id="player-screen">
+    <div class="layout-container" id="layout-container">
+      <div class="no-content" id="no-content">Aguardando conteúdo...</div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+    let paired = false;
+
+    async function pair() {
+      const serverUrl = document.getElementById('server-url').value.trim();
+      const pairingCode = document.getElementById('pairing-code').value.trim();
+      const btn = document.getElementById('pair-btn');
+      const error = document.getElementById('pair-error');
+
+      if (!serverUrl || !pairingCode) {
+        error.textContent = 'Preencha todos os campos';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Conectando...';
+      error.textContent = '';
+
+      try {
+        const result = await window.playerAPI.pair(serverUrl, pairingCode);
+        
+        if (result.success) {
+          paired = true;
+          document.getElementById('pairing-screen').classList.add('paired');
+          document.getElementById('player-screen').classList.add('active');
+          document.getElementById('status-text').textContent = 'Conectado';
+          
+          // Start playback
+          window.playerAPI.start();
+          window.playerAPI.fullscreen();
+        } else {
+          error.textContent = result.error || 'Erro ao conectar';
+        }
+      } catch (err) {
+        error.textContent = err.message || 'Erro de conexão';
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Conectar';
+    }
+
+    // Listen for layout updates
+    window.playerAPI.onLayoutUpdate((layout) => {
+      if (!layout) return;
+      renderLayout(layout);
+    });
+
+    // Listen for schedule updates
+    window.playerAPI.onScheduleUpdate(() => {
+      console.log('Schedule update received');
+    });
+
+    function renderLayout(layout) {
+      const container = document.getElementById('layout-container');
+      const noContent = document.getElementById('no-content');
+      
+      // Clear existing regions
+      container.querySelectorAll('.region').forEach(el => el.remove());
+      
+      if (!layout || !layout.regions) {
+        noContent.style.display = 'block';
+        return;
+      }
+
+      noContent.style.display = 'none';
+      
+      let regions = layout.regions;
+      if (typeof regions === 'string') regions = JSON.parse(regions);
+
+      if (!regions || regions.length === 0) {
+        noContent.style.display = 'block';
+        return;
+      }
+
+      // Scale regions to fit screen
+      const screenW = window.innerWidth;
+      const screenH = window.innerHeight;
+      const scaleX = screenW / layout.width;
+      const scaleY = screenH / layout.height;
+      const scale = Math.min(scaleX, scaleY);
+      const offsetX = (screenW - layout.width * scale) / 2;
+      const offsetY = (screenH - layout.height * scale) / 2;
+
+      regions.forEach(region => {
+        const el = document.createElement('div');
+        el.className = 'region';
+        el.style.left = (region.x * scale + offsetX) + 'px';
+        el.style.top = (region.y * scale + offsetY) + 'px';
+        el.style.width = (region.width * scale) + 'px';
+        el.style.height = (region.height * scale) + 'px';
+
+        if (region.mediaId) {
+          const img = document.createElement('img');
+          img.src = `${document.getElementById('server-url').value}/api/media/${region.mediaId}/download`;
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'contain';
+          el.appendChild(img);
+        } else {
+          const text = document.createElement('div');
+          text.className = 'text-content';
+          text.textContent = region.name || 'Região';
+          el.appendChild(text);
+        }
+
+        container.appendChild(el);
+      });
+    }
+
+    // Auto-connect if already paired
+    window.addEventListener('DOMContentLoaded', async () => {
+      const status = await window.playerAPI.getStatus();
+      if (status.paired) {
+        document.getElementById('server-url').value = status.serverUrl || '';
+      }
+    });
+  </script>
+</body>
+</html>

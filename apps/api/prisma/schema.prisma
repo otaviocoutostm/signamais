@@ -1,0 +1,282 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  name      String
+  fileName  String
+  mimeType  String
+  size      Int
+  width     Int?
+  height    Int?
+  duration  Float?
+  thumbnail String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("media")
+}
+
+model Layout {
+  id              String   @id @default(uuid())
+  name            String
+  width           Int      @default(1920)
+  height          Int      @default(1080)
+  backgroundColor String   @default("#000000")
+  regions         String   @default("[]")
+  isTemplate      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  schedules       Schedule[]
+  campaignItems   CampaignItem[]
+  overlayChildren OverlaySchedule[]
+
+  @@map("layouts")
+}
+
+model Player {
+  id           String    @id @default(uuid())
+  name         String?
+  pairingCode  String?
+  pairedAt     DateTime?
+  lastSeenAt   DateTime?
+  status       String    @default("offline")
+  version      String?
+  os           String?
+  screenWidth  Int?
+  screenHeight Int?
+  settings     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  schedules                  Schedule[]
+  displayGroupMemberships    DisplayGroupMember[]
+  proofOfPlay                ProofOfPlay[]
+  logs                       PlayerLog[]
+  overlaySchedules           OverlaySchedule[]
+
+  @@map("players")
+}
+
+model DisplayGroup {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members DisplayGroupMember[]
+
+  @@map("display_groups")
+}
+
+model DisplayGroupMember {
+  id       String @id @default(uuid())
+  groupId  String
+  playerId String
+
+  group  DisplayGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  player Player      @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, playerId])
+  @@map("display_group_members")
+}
+
+model Campaign {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items     CampaignItem[]
+  schedules Schedule[]
+
+  @@map("campaigns")
+}
+
+model CampaignItem {
+  id         String @id @default(uuid())
+  campaignId String
+  layoutId   String
+  displayOrder Int
+  duration   Int?   @default(10)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  layout   Layout   @relation(fields: [layoutId], references: [id], onDelete: Cascade)
+  @@unique([campaignId, displayOrder])
+  @@map("campaign_items")
+}
+
+model Schedule {
+  id        String   @id @default(uuid())
+  playerId  String?
+  groupId   String?
+  layoutId  String?
+  campaignId String?
+  startDate DateTime
+  endDate   DateTime?
+  dayOfWeek String?
+  startTime String?
+  endTime   String?
+  priority  Int      @default(0)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  player  Player?    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  layout  Layout?    @relation(fields: [layoutId], references: [id], onDelete: SetNull)
+  campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  overlays OverlaySchedule[]
+
+  @@index([playerId])
+  @@index([groupId])
+  @@index([layoutId])
+  @@index([campaignId])
+  @@map("schedules")
+}
+
+model OverlaySchedule {
+  id        String   @id @default(uuid())
+  scheduleId String
+  playerId  String?
+  layoutId  String
+  startDate DateTime
+  endDate   DateTime?
+  dayOfWeek String?
+  startTime String?
+  endTime   String?
+  priority  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  schedule Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  player   Player?  @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  layout   Layout   @relation(fields: [layoutId], references: [id], onDelete: Cascade)
+
+  @@index([scheduleId])
+  @@index([playerId])
+  @@map("overlay_schedules")
+}
+
+model ProofOfPlay {
+  id        String    @id @default(uuid())
+  playerId  String
+  layoutId  String
+  mediaId   String?
+  startedAt DateTime
+  endedAt   DateTime?
+  duration  Int?
+  createdAt DateTime  @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([createdAt])
+  @@map("proof_of_play")
+}
+
+model PlayerLog {
+  id        String   @id @default(uuid())
+  playerId  String
+  level     String
+  message   String
+  createdAt DateTime @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@index([playerId])
+  @@index([createdAt])
+  @@map("player_logs")
+}
+
+// ===== Queue Management =====
+
+model QueueService {
+  id          String   @id @default(uuid())
+  name        String
+  prefix      String   @default("N")
+  description String?
+  color       String   @default("#0055FF")
+  priority    Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tickets QueueTicket[]
+
+  @@map("queue_services")
+}
+
+model QueueDesk {
+  id        String  @id @default(uuid())
+  name      String
+  number    Int     @unique
+  location  String?
+  isActive  Boolean @default(true)
+  isPaused  Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tickets QueueTicket[] @relation("DeskTickets")
+  calls   QueueCall[]
+
+  @@map("queue_desks")
+}
+
+model QueueTicket {
+  id          String    @id @default(uuid())
+  number      Int
+  displayNumber String
+  serviceId   String
+  deskId      String?
+  status      String    @default("waiting")
+  issuedAt    DateTime  @default(now())
+  calledAt    DateTime?
+  finishedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  service QueueService @relation(fields: [serviceId], references: [id])
+  desk    QueueDesk?   @relation("DeskTickets", fields: [deskId], references: [id], onDelete: SetNull)
+  calls   QueueCall[]
+
+  @@unique([serviceId, number])
+  @@index([serviceId])
+  @@index([status])
+  @@map("queue_tickets")
+}
+
+model QueueCall {
+  id        String   @id @default(uuid())
+  ticketId  String
+  deskId    String
+  action    String
+  createdAt DateTime @default(now())
+
+  ticket QueueTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  desk   QueueDesk   @relation(fields: [deskId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([deskId])
+  @@index([createdAt])
+  @@map("queue_calls")
+}

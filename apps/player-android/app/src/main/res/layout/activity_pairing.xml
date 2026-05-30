@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:background="#0f0f0f">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SignaMais"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player Android"
+        android:textSize="14sp"
+        android:textColor="#FF0044"
+        android:layout_marginBottom="48dp" />
+
+    <EditText
+        android:id="@+id/serverUrlInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Servidor (URL)"
+        android:inputType="textUri"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#666666"
+        android:textSize="14sp"
+        android:background="#1a1a1a"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <EditText
+        android:id="@+id/pairingCodeInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Código de Pareamento"
+        android:inputType="text"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#666666"
+        android:textSize="14sp"
+        android:letterSpacing="0.1"
+        android:background="#1a1a1a"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/pairButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="PAREAR"
+        android:textAllCaps="true"
+        android:textSize="14sp"
+        android:backgroundTint="#FF0044" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text=""
+        android:textSize="12sp"
+        android:textColor="#888888"
+        android:gravity="center" />
+
+</LinearLayout>

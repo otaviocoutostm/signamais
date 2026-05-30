@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SignaMais</string>
+    <string name="pair_button">PAREAR</string>
+    <string name="server_hint">Servidor (URL)</string>
+    <string name="code_hint">Código de Pareamento</string>
+</resources>
