@@ -1,17 +1,29 @@
-# Web (Next.js) Dockerfile
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Copy package files
 COPY apps/web/package*.json ./
 RUN npm ci
-COPY apps/web .
+
+# Copy source
+COPY apps/web/tsconfig*.json ./
+COPY apps/web/next.config.js ./
+COPY apps/web/next-env.d.ts ./
+COPY apps/web/public ./public
+COPY apps/web/src ./src
+
+# Build
 RUN npm run build
 
+# Production image
 FROM node:20-alpine
 WORKDIR /app
+
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/next.config.js ./
-RUN npm ci --only=production
+
 EXPOSE 3000
 CMD ["npm", "start"]
