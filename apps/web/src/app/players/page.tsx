@@ -48,7 +48,7 @@ export default function PlayersPage() {
 
   const loadPlayers = async () => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/players`, {
+      const res = await axios.get(`/api/players`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setPlayers(res.data);
@@ -58,7 +58,7 @@ export default function PlayersPage() {
 
   const createPlayer = async () => {
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/players`, {}, {
+      const res = await axios.post(`/api/players`, {}, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setPlayers(prev => [res.data, ...prev]);
@@ -68,7 +68,7 @@ export default function PlayersPage() {
 
   const removePlayer = async (id: string) => {
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/players/${id}`, {
+      await axios.delete(`/api/players/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       setPlayers(prev => prev.filter(p => p.id !== id));

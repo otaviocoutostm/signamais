@@ -54,7 +54,7 @@ export default function LayoutEditorPage() {
   const loadLayout = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/layouts/${params.id}`,
+        `/api/layouts/${params.id}`,
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
       setLayout(data);
@@ -66,7 +66,7 @@ export default function LayoutEditorPage() {
   const loadMedia = async () => {
     try {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/media`,
+        `/api/media`,
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
       setMedia(data.filter((m: any) => m.mimeType.startsWith('image/')));
@@ -77,7 +77,7 @@ export default function LayoutEditorPage() {
     setSaving(true);
     try {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/layouts/${params.id}`,
+        `/api/layouts/${params.id}`,
         { regions: JSON.stringify(regions) },
         { headers: { Authorization: `Bearer ${getToken()}` } }
       );
@@ -253,7 +253,7 @@ export default function LayoutEditorPage() {
                     )}
                     {r.type === 'media' && r.mediaId && (
                       <div style={{ height: 'calc(100% - 22px)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                        <img src={`${process.env.NEXT_PUBLIC_API_URL}/api/media/${r.mediaId}/download`}
+                        <img src={`/api/media/${r.mediaId}/download`}
                              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                       </div>
                     )}
@@ -308,7 +308,7 @@ export default function LayoutEditorPage() {
                     </div>
                   )}
                   {r.type === 'media' && r.mediaId && (
-                    <img src={`${process.env.NEXT_PUBLIC_API_URL}/api/media/${r.mediaId}/download`}
+                    <img src={`/api/media/${r.mediaId}/download`}
                          style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   )}
                 </div>
@@ -396,7 +396,7 @@ export default function LayoutEditorPage() {
                           background: selected.mediaId === m.id ? 'rgba(255,0,68,0.15)' : 'transparent',
                           border: selected.mediaId === m.id ? '1px solid #FF0044' : '1px solid transparent',
                         }}>
-                        <img src={`${process.env.NEXT_PUBLIC_API_URL}/api/media/${m.id}/download`}
+                        <img src={`/api/media/${m.id}/download`}
                              style={{ width: 40, height: 28, borderRadius: 4, objectFit: 'cover' }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: '0.75rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.name}</div>

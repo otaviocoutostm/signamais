@@ -23,7 +23,7 @@ export default function QueueTotemPage() {
 
   const loadServices = async () => {
     try {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/services`);
+      const { data } = await axios.get(`/api/queue/services`);
       setServices(data.filter((s: QueueService) => s.isActive));
     } catch {}
     finally { setLoading(false); }
@@ -32,7 +32,7 @@ export default function QueueTotemPage() {
   const issueTicket = async (serviceId: string) => {
     setIssuing(true);
     try {
-      const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/ticket/issue`, { serviceId });
+      const { data } = await axios.post(`/api/queue/ticket/issue`, { serviceId });
       setIssuedTicket(data);
     } catch {}
     setIssuing(false);

@@ -36,8 +36,8 @@ export default function DisplayGroupsPage() {
       const token = getToken();
       const headers = { Authorization: `Bearer ${token}` };
       const [grpRes, playRes] = await Promise.all([
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/display-groups`, { headers }),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/players`, { headers }),
+        axios.get(`/api/display-groups`, { headers }),
+        axios.get(`/api/players`, { headers }),
       ]);
       setGroups(grpRes.data);
       setPlayers(playRes.data);
@@ -49,7 +49,7 @@ export default function DisplayGroupsPage() {
     if (!form.name) return;
     try {
       const token = getToken();
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/display-groups`, form, {
+      await axios.post(`/api/display-groups`, form, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setShowForm(false);
@@ -61,7 +61,7 @@ export default function DisplayGroupsPage() {
   const removeGroup = async (id: string) => {
     try {
       const token = getToken();
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/display-groups/${id}`, {
+      await axios.delete(`/api/display-groups/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       loadAll();
@@ -72,7 +72,7 @@ export default function DisplayGroupsPage() {
     if (!playerId) return;
     try {
       const token = getToken();
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/display-groups/${groupId}/members`,
+      await axios.post(`/api/display-groups/${groupId}/members`,
         { playerId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -83,7 +83,7 @@ export default function DisplayGroupsPage() {
   const removeMember = async (groupId: string, playerId: string) => {
     try {
       const token = getToken();
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/display-groups/${groupId}/members/${playerId}`, {
+      await axios.delete(`/api/display-groups/${groupId}/members/${playerId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       loadAll();

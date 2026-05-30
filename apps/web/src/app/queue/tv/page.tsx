@@ -15,7 +15,7 @@ export default function QueueTvPage() {
   const [time, setTime] = useState('');
   const [callFlash, setCallFlash] = useState<string | null>(null);
   const socketRef = useRef<Socket | null>(null);
-  const wsUrl = process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || '';
+  const wsUrl = typeof window !== 'undefined' ? window.location.origin.replace('http', 'ws') : '';
 
   useEffect(() => {
     loadDisplay();
@@ -45,7 +45,7 @@ export default function QueueTvPage() {
 
   const loadDisplay = async () => {
     try {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/queue/display`);
+      const { data } = await axios.get(`/api/queue/display`);
       setDisplay(data);
     } catch {}
   };

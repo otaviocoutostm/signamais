@@ -47,8 +47,8 @@ export default function CampaignsPage() {
       const token = getToken();
       const headers = { Authorization: `Bearer ${token}` };
       const [campRes, layRes] = await Promise.all([
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/campaigns`, { headers }),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/layouts`, { headers }),
+        axios.get(`/api/campaigns`, { headers }),
+        axios.get(`/api/layouts`, { headers }),
       ]);
       setCampaigns(campRes.data);
       setLayouts(layRes.data);
@@ -60,7 +60,7 @@ export default function CampaignsPage() {
     if (!form.name) return;
     try {
       const token = getToken();
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/campaigns`, form, {
+      await axios.post(`/api/campaigns`, form, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setShowForm(false);
@@ -72,7 +72,7 @@ export default function CampaignsPage() {
   const removeCampaign = async (id: string) => {
     try {
       const token = getToken();
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/campaigns/${id}`, {
+      await axios.delete(`/api/campaigns/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       loadAll();
@@ -85,7 +85,7 @@ export default function CampaignsPage() {
       const token = getToken();
       const campaign = campaigns.find(c => c.id === campaignId);
       const nextOrder = campaign ? campaign.items.length : 0;
-      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/campaigns/${campaignId}/items`, {
+      await axios.post(`/api/campaigns/${campaignId}/items`, {
         ...addItemForm,
         displayOrder: nextOrder,
       }, { headers: { Authorization: `Bearer ${token}` } });
@@ -97,7 +97,7 @@ export default function CampaignsPage() {
   const removeItem = async (itemId: string) => {
     try {
       const token = getToken();
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/campaigns/items/${itemId}`, {
+      await axios.delete(`/api/campaigns/items/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       loadAll();
@@ -107,7 +107,7 @@ export default function CampaignsPage() {
   const moveItem = async (itemId: string, newOrder: number) => {
     try {
       const token = getToken();
-      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/campaigns/items/${itemId}`,
+      await axios.put(`/api/campaigns/items/${itemId}`,
         { displayOrder: newOrder },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -218,7 +218,7 @@ export default function CampaignsPage() {
                                 const regions = JSON.parse(item.layout.regions);
                                 const mediaRegion = regions.find((r: any) => r.type === 'media' && r.mediaId);
                                 return mediaRegion
-                                  ? <img src={`${process.env.NEXT_PUBLIC_API_URL}/api/media/${mediaRegion.mediaId}/download`}
+                                  ? <img src={`/api/media/${mediaRegion.mediaId}/download`}
                                          className="w-full h-full object-cover" />
                                   : <Layers size={14} className="text-gray-300" />;
                               } catch {
