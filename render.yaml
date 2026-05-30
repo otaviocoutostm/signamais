@@ -1,4 +1,4 @@
-# Render Blueprint — Deploy do SignaMais (Node.js Native)
+# Render Blueprint — Deploy do SignaMais
 services:
   - type: web
     name: signamais-api
@@ -14,6 +14,10 @@ services:
         value: 3001
       - key: JWT_SECRET
         generateValue: true
+      - key: PRISMA_CLIENT_ENGINE_TYPE
+        value: binary
+      - key: DATABASE_URL
+        value: file:./prisma/dev.db
 
   - type: web
     name: signamais-web
